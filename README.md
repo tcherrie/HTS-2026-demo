@@ -9,12 +9,12 @@ This repository contains FEM implementations of H-formulation for 2D and 3D High
 
 Click here to open the JupyterLite environment :
 
-[![lite-badge](https://jupyterlite.rtfd.io/en/latest/_static/badge.svg)](https://tcherrie.github.io/HTS-2026/lab/?path=index.ipynb)
+[![lite-badge](https://jupyterlite.rtfd.io/en/latest/_static/badge.svg)](https://tcherrie.github.io/HTS-2026-demo/lab/?path=index.ipynb)
 
 ## 2) Installation
-Install the required packages in a new Python environment (version 3.13 or later, see `requirements.txt`). 
+Install the required packages in a new Python environment (version 3.13 or later, see `requirements_hts.txt`). Do not use `requirements.txt` that contains what is necessary to deploy the JupyterLite website.
 
-For doing so, open a terminal, create and activate a dedicated Python environment, using for instance `conda` (requires the installation of [miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) ): 
+For installing the packages, open a terminal, create and activate a dedicated Python environment, using for instance `conda` (requires the installation of [miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) ): 
 
 `conda create -n myenv python=3.13`
 
@@ -28,15 +28,15 @@ Then, go to the folder where the code is located:
 
 replacing `C:\path\to\the\folder` by the path to the local folder containing this code. The, install the required packages using 
 
-`pip install -r requirements.txt`
+`pip install -r requirements_hts.txt`
 
 After that, you should be able to run the scripts on your computer.
 
 ### Run the scripts
 Execute one of the scripts in your favorite IDE within your newly created `myenv` environment:
-- `2D_tape_external_field.py`
-- `2D_tape_transport_current.py`
-- `3D_bulk_external_field.py`
+- `2D_tape_external_field.ipynb`
+- `2D_tape_transport_current.ipynb`
+- `3D_bulk_external_field.ipynb`
 
 ## 2) Contents of the repository
 
