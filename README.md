@@ -7,7 +7,11 @@ This repository contains FEM implementations of H-formulation for 2D and 3D High
 
 ## 1) Quickstart
 
-### Installation
+Click here to open the JupyterLite environment :
+
+[![lite-badge](https://jupyterlite.rtfd.io/en/latest/_static/badge.svg)](https://tcherrie.github.io/HTS-2026/lab/?path=index.ipynb)
+
+## 2) Installation
 Install the required packages in a new Python environment (version 3.13 or later, see `requirements.txt`). 
 
 For doing so, open a terminal, create and activate a dedicated Python environment, using for instance `conda` (requires the installation of [miniconda](https://www.anaconda.com/docs/getting-started/miniconda/main) ): 
