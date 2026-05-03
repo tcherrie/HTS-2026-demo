@@ -1,6 +1,6 @@
 #%% 1) Geometry and mesh generation ##########################################
 
-from utils.geometry import mesh_tape_comsol
+from content.utils.geometry import mesh_tape_comsol
 
 mesh = mesh_tape_comsol()
 print(f"Imported 2D ribbon mesh with {mesh.ne} triangles, {mesh.nedge} edges and {mesh.nv} nodes.")
@@ -177,7 +177,7 @@ t_current = 0.0          # initial time
 step = 0                 # time step counter 
 
 import time 
-from utils.solver_mixed import newton_mixed
+from content.utils.solver_mixed import newton_mixed
 from ngsolve import Integrate
 from ngsolve import sin
 
@@ -283,7 +283,7 @@ print(f"Average losses Ed (half cycle) : {Ed:.6e} W/m")
 
 ## Data plot
 
-from utils.trace import plot_result
+from content.utils.trace import plot_result
 plot_result(time_list, ac_losses_list, filename_comsol = "results_COMSOL/2D/transport_current/AC_Losses_"+str(I0)+"A.txt")
 
 ## Data save
