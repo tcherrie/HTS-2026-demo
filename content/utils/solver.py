@@ -6,6 +6,8 @@ from ngsolve.webgui import Draw
 from time import time
 import multiprocessing
 
+from ngsolve.solvers import SuperLU
+
 def newton(fes : ngs.FESpace,                                                       # finite element space
           residual : callable,                                                      # residual(state, test)
           residual_derivative : callable = None,                                    # residual_derivative(state, trial, test) (optional)
@@ -24,7 +26,8 @@ def newton(fes : ngs.FESpace,                                                   
           minstep_linesearch : float = 1e-12,   # minimum step size allowed in the line search 
           armijo_linesearch : float = 0.01,     # Armijo coefficient in [0, 1) such that |residual(u-step*du)|² < residual²(u) - armijo_linesearch*step*(|residual(u)|²)'(du)
           step_factor_linesearch : float = 0.5, # step size reduction factor in (0, 1) to reduce the step if too big
-          use_multithreading : bool = False     # flag to enable parallelization with TaskManager during assembly
+          use_multithreading : bool = False,     # flag to enable parallelization with TaskManager during assembly
+          inverse = "superlu"
           ) -> dict:
     
     """
@@ -180,8 +183,11 @@ def newton(fes : ngs.FESpace,                                                   
         tStartSolve = time()
         if verbosity >= 3 : print(f" - Solve .......... ", end = "")
 
-
-        Kinv  = dres.mat.Inverse(freedofs=fes.FreeDofs(), inverse = "pardiso")    #sparsecholesky   pardiso
+        try:
+            #Kinv = SuperLU(dres.mat, freedofs=fes.FreeDofs())
+            Kinv  = dres.mat.Inverse(freedofs=fes.FreeDofs(), inverse = inverse)    #sparsecholesky   pardiso
+        except :
+            Kinv = SuperLU(dres.mat, freedofs=fes.FreeDofs())
         descent.vec.data = Kinv * res.vec
         if verbosity >= 3 : print(f"done ({(time()-tStartSolve) * 1000 :.2f} ms).")
 

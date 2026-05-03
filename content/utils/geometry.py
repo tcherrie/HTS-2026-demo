@@ -1,3 +1,59 @@
+
+def mesh_tape_ngsolve(thickness_tape : float = 1e-6,
+                     width_tape : float = 4e-3,
+                     rbox : float = 20e-3,
+                     hmax_tape_corner : float = 1e-6,
+                     hmax_tape_inside : float = 10e-6,
+                     hmax_out : float = 5e-3,
+                     out_label : str = "out",
+                     bottom_label : str = "bottom",
+                     left_label : str = "left",
+                     air_label : str = "air",
+                     hts_label : str = "hts"):
+    """ Create and returns 2D ngsolve mesh of a tape in air with symmetries. """
+    
+    from netgen.geom2d import SplineGeometry
+    from ngsolve import Mesh
+
+    geo = SplineGeometry()
+    
+    pnts =[[(0,0), {"maxh": hmax_tape_inside}],
+           [(width_tape/2, 0), {"maxh": hmax_tape_corner}],
+           [(rbox,0), {"maxh": hmax_out}],
+           [(rbox,rbox), {"maxh": hmax_out}],
+           [(0,rbox), {"maxh": hmax_out}],
+           [(0,thickness_tape/2), {"maxh": hmax_tape_inside}],
+           [(width_tape/2,thickness_tape/2), {"maxh": hmax_tape_corner}],
+           ]
+    
+    for pnt, props in pnts:
+        geo.AppendPoint(*pnt, **props)
+        
+    hts = 1
+    air = 2
+    
+    lines = [[["line",0,1], {"leftdomain": hts, "rightdomain": 0, "bc" : bottom_label, "maxh": hmax_tape_inside}],
+             [["line",1,2], {"leftdomain": air, "rightdomain": 0, "bc" : bottom_label}],
+             [["spline3",2,3,4], {"leftdomain": air, "rightdomain": 0, "maxh": hmax_out, "bc" : out_label}],
+             [["line",4,5], {"leftdomain": air, "rightdomain": 0, "bc" : left_label}],
+             [["line",5,0], {"leftdomain": hts, "rightdomain": 0, "bc" : left_label}],
+             [["line",1,6], {"leftdomain": hts, "rightdomain": air, "maxh": hmax_tape_corner}],
+             [["line",5,6], {"leftdomain": air, "rightdomain": hts, "maxh": hmax_tape_inside}],
+            ]
+    
+    for line, props in lines:
+        geo.Append(line, **props)
+    
+    geo.SetMaterial(air, air_label)
+    geo.SetMaterial(hts, hts_label)
+    
+    geo.SetDomainMaxH(1, hmax_tape_inside)
+    
+    return geo.GenerateMesh(maxh = max([hmax_tape_corner, hmax_tape_inside, hmax_out]))
+
+################################################################################################
+
+
 import re
 import numpy as np
 
@@ -376,30 +432,55 @@ def import_comsol_mesh_3d(filename, labelBND={}, labelMat={}):
 
 ################################################################################################
 
-def mesh_tape_comsol():
+def mesh_tape_comsol(quarter = False):
     """ Read and returns 2D comsol mesh """
-    labelBND = {
-        "0": "left_hts",
-        "1": "bottom_hts",
-        "2": "top_hts",
-        "3": "right_hts",
-        "4": "out",
-        "5": "out",
-        "6": "out",
-        "7": "out",
-    }
-
-    labelMat = {
-        "1": "air",
-        "2": "hts",
-    }
-    try : return import_comsol_mesh_2D( "utils/mesh_comsol_2D.mphtxt",
-                             labelBND=labelBND,
-                             labelMat=labelMat)
     
-    except: return import_comsol_mesh_2D( "mesh_comsol_2D.mphtxt",
-                             labelBND=labelBND,
-                             labelMat=labelMat)
+    if quarter:
+        labelMat = {
+            "1": "hts",
+            "2": "air",
+        }
+        labelBND = {
+            "0": "left_hts",
+            "1": "bottom_hts",
+            "2": "left_air",
+            "3": "top_hts",
+            "4": "right_hts",
+            "5": "bottom_air",
+            "6": "out",
+        }
+        
+        try : return import_comsol_mesh_2D( "utils/tape2D_quarter.mphtxt",
+                                labelBND=labelBND,
+                                labelMat=labelMat)
+        
+        except: return import_comsol_mesh_2D( "tape2D_quarter.mphtxt",
+                                labelBND=labelBND,
+                                labelMat=labelMat)
+        
+    else:
+        labelMat = {
+            "1": "air",
+            "2": "hts",
+        }
+        labelBND = {
+            "0": "left_hts",
+            "1": "bottom_hts",
+            "2": "top_hts",
+            "3": "right_hts",
+            "4": "out",
+            "5": "out",
+            "6": "out",
+            "7": "out",
+        }
+
+        try : return import_comsol_mesh_2D( "utils/mesh_comsol_2D.mphtxt",
+                                labelBND=labelBND,
+                                labelMat=labelMat)
+        
+        except: return import_comsol_mesh_2D( "mesh_comsol_2D.mphtxt",
+                                labelBND=labelBND,
+                                labelMat=labelMat)
 
 
 def mesh_bulk_comsol():
@@ -428,6 +509,7 @@ def mesh_bulk_comsol():
                              labelMat=labelMat)
 
 ################################################################################################
+
 
 
 if __name__ == "__main__":

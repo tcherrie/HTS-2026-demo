@@ -1,0 +1,11 @@
+# python_version >= 3.13
+
+numpy == 2.3.3
+matplotlib == 3.10.6
+ngsolve == 6.2.2506
+scipy == 1.17.0
+
+# for jupyter notebooks
+# jupyter == 1.1.1
+# webgui_jupyter_widgets==0.2.37
+# ipympl == 0.9.8
