@@ -7,6 +7,8 @@ from time import time
 import multiprocessing
 
 from ngsolve.solvers import SuperLU
+from ngsolve.krylovspace import GMResSolver
+
 
 def newton(fes : ngs.FESpace,                                                       # finite element space
           residual : callable,                                                      # residual(state, test)
@@ -186,10 +188,14 @@ def newton(fes : ngs.FESpace,                                                   
         tStartSolve = time()
         if verbosity >= 3 : print(f" - Solve .......... ", end = "")
 
-        if inverse.lower() != "superlu":
+        if inverse.lower() != "superlu" and inverse.lower() != "gmres":
             Kinv  = dres.mat.Inverse(freedofs=fes.FreeDofs(), inverse = inverse)  
-        else:
+        elif inverse.lower() == "superlu":
             Kinv = SuperLU(dres.mat, freedofs=fes.FreeDofs())
+        elif inverse.lower() == "gmres":
+            Kinv = GMResSolver(dres.mat, freedofs=fes.FreeDofs(), 
+                               atol = max(residual_list[-1] * 1e-3, tol_dec), maxiter = 1000,
+                               printrates = True)
         descent.vec.data = Kinv * res.vec
         if verbosity >= 3 : print(f"done ({(time()-tStartSolve) * 1000 :.2f} ms).")
 

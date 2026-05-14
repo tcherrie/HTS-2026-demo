@@ -491,11 +491,11 @@ def mesh_bulk_comsol(eighth = False):
         labelBND = {
             "0": "sym",
             "1": "sym", 
-            "2": "antisym", 
+            "2": "bottom_hts", 
             "3": "sym",             
             "4": "sym", 
             "6": "out", 
-            "8": "antisym", 
+            "8": "bottom_air", 
             "9": "out", 
             "11": "out",  
         }
