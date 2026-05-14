@@ -483,28 +483,49 @@ def mesh_tape_comsol(quarter = False):
                                 labelMat=labelMat)
 
 
-def mesh_bulk_comsol():
+def mesh_bulk_comsol(eighth = False):
     """ Read and returns 3D comsol mesh """
-    labelBND = {
-        "0": "out",  # Dirichlet_X_M
-        "1": "out",  # Dirichlet_Y_M
-        "2": "out",  # Dirichlet_Z_M
-        "11": "out", # Dirichlet_X_P
-        "4": "out",  # Dirichlet_Y_P
-        "3": "out",  # Dirichlet_Z_P
-    }
+    
+    if eighth:
+        name = "bulk3D_eighth.mphtxt"
+        labelBND = {
+            "0": "sym",
+            "1": "sym", 
+            "2": "antisym", 
+            "3": "sym",             
+            "4": "sym", 
+            "6": "out", 
+            "8": "antisym", 
+            "9": "out", 
+            "11": "out",  
+        }
 
-    labelMat = {
-        "1": "air",
-        "2": "hts",
-    }
+        labelMat = {
+            "1": "hts",
+            "2": "air",
+        }
+    else:
+        name = "mesh_comsol_3D.mphtxt"
+        labelBND = {
+            "0": "out",  # Dirichlet_X_M
+            "1": "out",  # Dirichlet_Y_M
+            "2": "out",  # Dirichlet_Z_M
+            "11": "out", # Dirichlet_X_P
+            "4": "out",  # Dirichlet_Y_P
+            "3": "out",  # Dirichlet_Z_P
+        }
+
+        labelMat = {
+            "1": "air",
+            "2": "hts",
+        }
 
 
-    try : return import_comsol_mesh_3d( "utils/mesh_comsol_3D.mphtxt",
+    try : return import_comsol_mesh_3d( "utils/" + name,
                              labelBND=labelBND,
                              labelMat=labelMat)
     
-    except: return import_comsol_mesh_3d( "mesh_comsol_3D.mphtxt",
+    except: return import_comsol_mesh_3d( name,
                              labelBND=labelBND,
                              labelMat=labelMat)
 
